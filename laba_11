@@ -1,0 +1,55 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <locale.h>
+#include <time.h>
+
+void main()
+{
+	setlocale(0, "russian");
+	srand((unsigned)time(NULL));
+	int* a;
+	int n, i, S=0, FL=0;
+	printf("Введите количество элементов в массиве:");
+	scanf("%d", &n);
+	a = new int[n];
+	for (i = 0; i < n; i++)
+	{
+		*(a + i) = rand() % 50 - 25;
+		printf("%4d", *(a+i));
+	}
+	printf("\nАдреса элементов, кратных 2:\n");
+	for (i = 0; i < n; i++)
+	{
+		if (*(a + i)%2 == 0)
+		{
+			S = S + *(a + i);
+			printf("%p", (a + i));
+			printf("   S=%d\n", S);
+		}
+	}
+	i = 0;
+	if (S != 0)
+	{
+		printf("\nS=%d\n", S);
+		while (i < n && FL != 1)
+		{
+			if (*(a + i) < 0)
+			{
+				*(a + i) = S;
+				FL = 1;
+			}
+			i++;
+		}
+		if (FL == 0) printf("Нет отрицательных элементов!!!\n");
+		else
+		{
+			printf("Измененный массив:\n");
+			for (i = 0; i < n; i++)
+			{
+				printf("%4d", *(a + i));
+			}
+		}
+	}
+	else printf("Нет элементов кратных 2!!!\n");
+}
