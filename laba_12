@@ -1,0 +1,61 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <locale.h>
+#include <time.h>
+
+int main()
+{
+	setlocale(0, "russian");
+	srand((unsigned)time(NULL));
+	int** a;
+	int n, m, i, j;
+	int min = 25, minj;
+	printf("Введите размеры массива:");
+	scanf("%d", &n);
+	scanf("%d", &m);
+	a = new int* [n];
+	for (i = 0; i < n; i++)
+	{
+		*(a + i) = new int[m];
+	}
+	for (i = 0; i < n; i++)
+	{
+		for (j = 0; j < m; j++)
+		{
+			*(*(a + i) + j) = rand() % 50 - 25;
+			printf("%4d", *(*(a + i) + j));
+		}
+		printf("\n");
+	}
+	while (n != m)
+	{
+		for (i = 0; i < n; i++)
+		{
+			for (j = 0; j < m; j++)
+			{
+				if (*(*(a + i) + j) < min)
+				{
+					min = *(*(a + i) + j);
+					minj = j;
+				}
+			}
+			for (j = minj; j < m - 1; j++)
+			{
+				*(*(a + i) + j) = *(*(a + i) + j + 1);
+			}
+			min = 25;
+		}
+		m = m - 1;
+	}
+	printf("Измененный массив:\n");
+	for (i = 0; i < n; i++)
+	{
+		for (j = 0; j < m; j++)
+		{
+			printf("%4d", *(*(a + i) + j));
+		}
+		printf("\n");
+	}
+	return 0;
+}
