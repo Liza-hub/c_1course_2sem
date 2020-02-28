@@ -1,0 +1,67 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <locale.h>
+#include <time.h>
+
+int main()
+{
+	setlocale(0, "russian");
+	srand((unsigned)time(NULL));
+	int** a, h1, h2;
+	int n, m, i, j, k=0, z;
+	printf("Введите размер квадратного массива:");
+	scanf("%d", &n);
+	a = new int* [n+1];
+	for (i = 0; i < n+1; i++)
+	{
+		*(a + i) = new int[n];
+	}
+	for (i = 0; i < n; i++)
+	{
+		for (j = 0; j < n; j++)
+		{
+			*(*(a + i) + j) = rand() % 50 - 25;
+			printf("%4d", *(*(a + i) + j));
+		}
+		printf("\n");
+	}
+	for (i = 0; i < n; i++)
+	{
+		*(*(a + n) + i) = 0;
+	}
+	for (j = 0; j < n; j++)
+	{
+		k = 0;
+		for (i = 0; i < n; i++)
+		{
+			if (*(*(a + i) + j) % 3 == 0) k++;
+		}
+		h1 = *(*(a + n - j - 1) + j);
+		*(*(a + n - j - 1) + j) = k;
+		for (i = n-j; i < n+1; i++)
+		{
+			h2 = *(*(a + i) + j);
+			*(*(a + i) + j) = h1;
+			h1 = h2;
+		}
+	}
+	m = n;
+	n++;
+	printf("Измененный массив:\n");
+	for (i = 0; i < n; i++)
+	{
+		for (j = 0; j < m; j++)
+		{
+			printf("%4d", *(*(a + i) + j));
+		}
+		printf("\n");
+	}
+	return 0;
+}
+
+
+
+///квад матрица, в каждом столбце найти количесво элементов кратных 3 и поместить их на побочную диагональ
+//если нет - заменить на 0
+//не стирая последнюю, смещением, сдвинув все остальные вниз
