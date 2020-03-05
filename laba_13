@@ -1,0 +1,54 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <locale.h>
+#include <time.h>
+#include <string.h>
+
+void main()
+{
+	setlocale(0, "russian");
+	int i = 0, n, k=0;
+	char* s, ch, h[14], *s2;
+	s = new char[120];
+	printf("Введите текст:\n");
+	ch = getchar();
+	while (ch!= '\n')
+	{
+		*(s + i) = ch;
+		i++;
+		ch = getchar();
+	}
+	*(s + i) = '\0';
+	puts(s);
+	n = i-1;
+	for (i = 0; i < strlen(s); i++)
+	{
+		if (k==12)
+		{
+			strncpy(h, s, k);
+			h[k] = '\0';
+			puts(h);
+			printf("%p\n", s);
+			s = s + k;
+			k = 0;
+			i = 0;
+		}
+		else
+		{
+			k++;
+			if ((*(s+i) == ' '))
+			{
+				strncpy(h, s, k);
+				h[k-1] = '\0';
+				puts(h);
+				printf("%p\n", s);
+				k = 0;
+				s = s + i + 1;
+				i = 0;
+			}
+		}
+	}
+	puts(s);
+	printf("%p\n", s);
+}
