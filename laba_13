@@ -2,53 +2,34 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <locale.h>
-#include <time.h>
 #include <string.h>
 
-void main()
+
+int main()
 {
 	setlocale(0, "russian");
-	int i = 0, n, k=0;
-	char* s, ch, h[14], *s2;
-	s = new char[120];
-	printf("Введите текст:\n");
-	ch = getchar();
-	while (ch!= '\n')
+	char* s, * st, * ptr1, * ptr, * ptr2;
+	char ch[12];
+	int dls = 0;
+	st = new char[120];
+	puts("Введите текст, состоящий из слов, разделенных одним пробелом:");
+	gets_s(st, 120);
+	s = new char[strlen(st) + 1];
+	strcpy(s, st);
+	delete[] st;
+	ptr = s;
+	ptr1 = strchr(ptr, ' ');
+	while (ptr1!= NULL)
 	{
-		*(s + i) = ch;
-		i++;
-		ch = getchar();
+		printf("%p\n", ptr);
+		dls = ptr1 - ptr;
+		strncpy(ch, ptr, dls);
+		ch[dls] = '\0';
+		puts(ch);
+		ptr = ptr + dls + 1;
+		ptr1 = strchr(ptr, ' ');
 	}
-	*(s + i) = '\0';
-	puts(s);
-	n = i-1;
-	for (i = 0; i < strlen(s); i++)
-	{
-		if (k==12)
-		{
-			strncpy(h, s, k);
-			h[k] = '\0';
-			puts(h);
-			printf("%p\n", s);
-			s = s + k;
-			k = 0;
-			i = 0;
-		}
-		else
-		{
-			k++;
-			if ((*(s+i) == ' '))
-			{
-				strncpy(h, s, k);
-				h[k-1] = '\0';
-				puts(h);
-				printf("%p\n", s);
-				k = 0;
-				s = s + i + 1;
-				i = 0;
-			}
-		}
-	}
-	puts(s);
-	printf("%p\n", s);
+	printf("%p\n", ptr);
+	puts(ptr);
+	return 0;
 }
