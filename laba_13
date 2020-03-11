@@ -33,3 +33,85 @@ int main()
 	puts(ptr);
 	return 0;
 }
+
+
+
+
+
+//исправленный вариант
+
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <locale.h>
+#include <string.h>
+
+struct elem
+{
+	char s[12];
+	elem* next;
+};
+
+int main()
+{
+	setlocale(0, "russian");
+	char* s, * st, * ptr1, * ptr, * ptr2;
+	elem* first, * p, *last;
+	char ch[12];
+	int dls = 0;
+	st = new char[120];
+	puts("Введите текст, состоящий из слов, разделенных одним пробелом:");
+	gets_s(st, 120);
+	first = new elem;
+	strcpy(first->s, "1\0");
+	last = new elem;
+	while (strlen(st) > 0)
+	{
+		s = new char[strlen(st) + 1];
+		strcpy(s, st);
+		delete[] st;
+		ptr = s;
+		ptr1 = strchr(ptr, ' ');
+		while (ptr1 != NULL)
+		{
+			printf("%p\n", ptr);
+			dls = ptr1 - ptr;
+			strncpy(ch, ptr, dls);
+			ch[dls] = '\0';
+			puts(ch);
+			if (strlen(first->s) == 1)
+			{
+				first->next = NULL;
+				strcpy(first->s, ch);
+				last = first;
+			}
+			else
+			{
+				p = new elem;
+				p->next = NULL;
+				last->next = p;
+				strcpy(p->s, ch);
+				last = p;
+			}
+			ptr = ptr + dls + 1;
+			ptr1 = strchr(ptr, ' ');
+		}
+		printf("%p\n", ptr);
+		puts(ptr);
+		p = new elem;
+		p->next = NULL;
+		last->next = p;
+		strcpy(p->s, ptr);
+		last = p;
+		st = new char[120];
+		puts("\0");
+		gets_s(st, 120);
+	}
+	p = first;
+	while (p != NULL)
+	{
+		puts(p->s);
+		p = p->next;
+	}
+	return 0;
+}
