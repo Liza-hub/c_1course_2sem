@@ -1,0 +1,55 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <locale.h>
+
+int vvod()
+{
+	int f;
+	printf("Введите число:");
+	scanf("%x", &f);
+	printf("Вы ввели:%x\n", f);
+	return f;
+}
+void sum(int f, int g)
+{
+	int s;
+	s = f + g;
+	printf("Сумма:%x\n", s);
+}
+void raz(int f, int g)
+{
+	int r;
+	r = f - g;
+	printf("Разность:%x\n", r);
+}
+
+
+int main()
+{
+	setlocale(0, "russian");
+	int f, v, g;
+	f = vvod();
+	g = vvod();
+	printf("Выберите действие\n   0)--выход\n   1)--ввод новых чисел\n   2)--найти сумму чисел\n   3)--найти разность чисел\n");
+	scanf("%d", &v);
+	while (v != 0)
+	{
+		if (v == 1)
+		{
+			f = vvod();
+			g = vvod();
+		}
+		else if (v==2)
+		{ 
+			sum(f, g);
+		}
+		else if (v == 3)
+		{
+			raz(f, g);
+		}
+		printf("Выберите действие\n   0)--выход\n   1)--ввод новых чисел\n   2)--найти сумму чисел\n   3)--найти разность чисел\n");
+		scanf("%d", &v);
+	}
+	return 0;
+}
