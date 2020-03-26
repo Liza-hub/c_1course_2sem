@@ -1,0 +1,298 @@
+/////1
+//строка
+//отсортировать слова по алфавиту, с помощью указателей
+/////2
+//из строки удалить все слова на гласную букву
+
+
+///////////1
+
+/*#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <locale.h>
+#include <string.h>
+
+struct slovo {
+	char slo[16];
+	slovo* next;
+};
+
+int main()
+{
+	setlocale(0, "russian");
+	char* s, * st, * ptr1, * ptr, * ch = new char[12];
+	int dls = 0, FL=0, k;
+	slovo* p, * first, * last, * g, * n;
+	st = new char[120];
+	puts("Введите текст, состоящий из слов, разделенных одним пробелом:");
+	gets_s(st, 120);
+	k = strlen(st);
+	s = new char[k+1];
+	strcpy(s, st);
+	delete[] st;
+	st = new char[k];
+	*(st + 0) = '\0';
+	ptr = s;
+
+	//находит первое слово
+	ptr1 = strchr(ptr, ' ');
+	dls = ptr1 - ptr;
+	strncpy(ch, ptr, dls);
+	*(ch + dls) = '\0';
+	ptr = ptr + dls + 1;
+	//создает первый элемент списка
+	first = new slovo;
+	first->next = NULL;
+	strcpy(first->slo, ch);
+	last = first;
+
+	ptr1 = strchr(ptr, ' ');
+	while (ptr1 != NULL && *ptr != '\0')
+	{
+		//ищет слово
+		dls = ptr1 - ptr;
+		strncpy(ch, ptr, dls);
+		*(ch + dls) = '\0';
+		//записывает в список
+		p = new slovo;
+		strcpy(p->slo, ch);
+
+		if (strcmp(p->slo, first->slo) < 0)
+		{
+			p->next = first;
+			first = p;
+		}
+		else
+		{
+			g = first;
+			n = first;
+			FL = 0;
+			while ((g = g->next) != NULL && FL == 0)
+			{
+				if (strcmp(p->slo, g->slo) < 0)
+				{
+					p->next = g;
+					n->next = p;
+					FL = 1;
+				}
+				else n = g;
+			}
+			if (FL == 0)
+			{
+				p->next = NULL;
+				n->next = p;
+				last = p;
+			}
+		}
+		//ищет новый пробел
+		ptr = ptr + dls + 1;
+		ptr1 = strchr(ptr, ' ');
+	}
+	ptr1 = strchr(ptr, '\0');
+	dls = ptr1 - ptr;
+	p = new slovo;
+	strcpy(p->slo, ptr);
+	if (strcmp(p->slo, first->slo) < 0)
+	{
+		p->next = first;
+		first = p;
+	}
+	else
+	{
+		g = first;
+		n = first;
+		FL = 0;
+		while ((g = g->next) != NULL && FL == 0)
+		{
+			if (strcmp(p->slo, g->slo) < 0)
+			{
+				p->next = g;
+				n->next = p;
+				FL = 1;
+			}
+			else n = g;
+		}
+		if (FL == 0)
+		{
+			p->next = NULL;
+			n->next = p;
+			last = p;
+		}
+	}
+	delete[] s;
+	p = first;
+	while (p != NULL)
+	{
+		strcat(st, p->slo);
+		strcat(st, " ");
+		p = p->next;
+	}
+	*(st + k) = '\0';
+	puts("Список слов, отсортированных по алфавиту:");
+	p = first;
+	while (p != NULL)
+	{
+		printf("%12s\n", p->slo);
+		p = p->next;
+	}
+	puts("Отсортированная строка:");
+	puts(st);
+	return 0;
+}
+*/
+
+
+
+
+
+
+
+
+
+
+/////////////2
+/*
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <locale.h>
+#include <string.h>
+
+
+int main()
+{
+	setlocale(0, "russian");
+	char* s, * st, * ptr1, * ptr, *ptr2, * ch = new char[12];
+	int dls = 0;
+	st = new char[120];
+	puts("Введите текст, состоящий из слов, разделенных одним пробелом:");
+	gets_s(st, 120);
+	s = new char[strlen(st) + 1];
+	strcpy(s, st);
+	delete[] st;
+	ptr = s;
+	while (*ptr == 'a')
+	{
+		ptr2 = strchr(ptr, ' ');
+		strcpy(s, ptr2+1);
+	}
+	while ((ptr1=strchr(ptr, ' ')) != NULL)
+	{
+		if (*(ptr1 + 1) == 'a')
+		{
+			ptr2 = strchr(ptr1+1, ' ');
+			if (ptr2 != NULL)
+			{
+				strcpy(ptr1, ptr2);
+			}
+			else
+			{
+				*(ptr1) = '\0';
+			}
+		}
+		else
+		{
+			dls = ptr1 - ptr;
+			ptr = ptr + dls + 1;
+		}
+	}
+	puts(s);
+	return 0;
+}*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//переписать
+//все больше ср ариф, крат 3 элементов
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <locale.h>
+#include <time.h>
+#include <conio.h>
+
+float cr_(int* A, int n)
+{
+	int i, k = 0;
+	float S = 0;
+	for (i = 0; i < n; i++)
+	{
+		if (*(A + i) % 3 == 0)
+		{
+			S = S + *(A + i);
+			k++;
+		}
+	}
+	S = S / k;
+	return S;
+}
+
+int kol(int* A, int n, float Sr)
+{
+	int i, k = 0;
+	for (i = 0; i < n; i++)
+	{
+		if (*(A + i) > Sr)
+		{
+			k++;
+		}
+	}
+	return k;
+}
+
+int* mas(int* A, int n)
+{
+	int i, j = 0, k, * B;
+	float Sr;
+	Sr = cr_(A, n);
+	printf("\nСреднее арифметическое:%6.3f", Sr);
+	k = kol(A, n, Sr);
+	B = new int[k];
+	printf("\nКоличество элементов, больше среднего арифметического:%d", k);
+	for (i = 0; i < n; i++)
+	{
+		if (*(A + i) > Sr)
+		{
+			*(B + j) = *(A + i);
+			j++;
+		}
+	}
+	return B;
+}
+
+int main()
+{
+	setlocale(0, "russian");
+	srand(time(NULL));
+	int* A, i, j, n, *B, k;
+	printf("Введите n:");
+	scanf("%d", &n);
+	A = new int[n];
+	for (i = 0; i < n; i++)
+	{
+		*(A+i) = rand() % 50 - 50;
+		printf("%4d", *(A+i));
+	}
+	B = mas(A, n);
+	k = kol(A, n, cr_(A, n));
+	printf("\nНовая матрица\n");
+	for (i = 0; i < k; i++)
+	{
+		printf("%4d", *(B + i));
+	}
+	getchar();
+	return 0;
+}
