@@ -1,0 +1,198 @@
+/*#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <locale.h>
+#include <time.h>
+#include <conio.h>
+
+FILE* write(char Name[])
+{
+	FILE* f;
+	fopen_s(&f, Name, "w+b");
+	char s[20];
+	puts("Введите числа:");
+	gets_s(s);
+	while (strlen(s) != 0)
+	{
+		fputs(s, f);
+		fputs("\n", f);
+		gets_s(s);
+	}
+	return f;
+}
+
+void print(FILE* f)
+{
+	rewind(f);
+	char  s[20];
+	while (fgets(s, 128, f) > 0)
+	{
+		puts(s);
+	}
+}
+
+int sum_chisel(char s[])
+{
+	char* ptr1, dls, ch[12];
+	char* ptr2 = s;
+	int x, S = 0;
+	while ((ptr1 = strchr(ptr2, ' ')) != NULL)
+	{
+		dls = ptr1 - ptr2;
+		strncpy(ch, ptr2, dls);
+		ch[dls] = '\0';
+		x = atoi(ch);
+		S = S + x;
+		ptr2 = ptr1 + 1;
+	}
+	ptr1 = strchr(ptr2, '\0');
+	dls = ptr1 - ptr2;
+	strncpy(ch, ptr2, dls);
+	ch[dls] = '\0';
+	x = atoi(ch);
+	S = S + x;
+	return S;
+}
+
+int find_max_summ(FILE* f)
+{
+	int min = 100000;
+	int mini = 0;
+	int i = 0;
+	char str[20];
+	int S;
+	rewind(f);
+	while (fgets(str, 128, f) > 0)
+	{
+		i++;
+		S = sum_chisel(str);
+		printf("Строка = %d Сумма = %d\n", i, S);
+		if (S < min)
+		{
+			min = S;
+			mini = i;
+		}
+	}
+	return mini;
+}
+
+FILE* delete_str(char FileName[], FILE* f, int mini)
+{
+	int i = 0;
+	FILE* g;
+	fopen_s(&g, "BUFFER.txt", "w");
+	char s[30];
+	rewind(f);
+	while (fgets(s, 128, f) > 0)
+	{
+		i++;
+		if (i != mini)
+		{
+			fputs(s, g);
+		}
+	}
+	fclose(f);
+	fclose(g);
+	_unlink(FileName);
+	rename("BUFFER.txt", FileName);
+	return g;
+}
+
+int main()
+{
+	setlocale(0, "russian");
+	char FileName[30];
+	int mini;
+	puts("Введите имя файла:");
+	gets_s(FileName);
+	FILE* f, *g;
+	f = write(FileName);
+	puts("В файл записано:");
+	print(f);
+	mini = find_max_summ(f);
+	printf("Минимальная строка = %d\n", mini);
+	g = delete_str(FileName, f, mini);
+	fopen_s(&g, FileName, "r");
+	puts("Файл после удаления строки с минимальной суммой:\n");
+	print(g);
+	fclose(g);
+	return 0;
+}*/
+
+
+
+
+
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <locale.h>
+#include <time.h>
+#include <conio.h>
+
+FILE* write(char Name[])
+{
+	FILE* f;
+	int x;
+	fopen_s(&f, Name, "w+b");
+	int n = rand() % 50;
+	for (int i = 0; i < n; i++)
+	{
+		x = rand() % 100 - 50;
+		fwrite(&x, 1, sizeof(x), f);
+	}
+	fclose(f);
+	return f;
+}
+
+void print(FILE* f, char Name[])
+{
+	fopen_s(&f, Name, "r");
+	int x;
+	while (fread(&x, 1, sizeof(x), f) > 0)
+	{
+		printf("%4d", x);
+	}
+	fclose(f);
+}
+
+FILE* new_file(FILE* f, char Name[], char Name2[])
+{
+	fopen_s(&f, Name, "r");
+	FILE* g;
+	int x;
+	fopen_s(&g, Name2, "w+b");
+	int offset = 0;
+	offset++;
+	fseek(f, -offset* sizeof(int), SEEK_END);
+	while (fread(&x, 1, sizeof(x), f) != NULL)
+	{
+		if (x>=0) fwrite(&x, 1, sizeof(x), g);
+		offset++;
+		fseek(f, -offset*sizeof(int), SEEK_END);
+	}
+	fclose(g);
+	fclose(f);
+	return g;
+}
+
+int main()
+{
+	setlocale(0, "russian");
+	srand(time(NULL));
+	char FileName[30];
+	char Name[30];
+	puts("Введите имя файла:");
+	gets_s(FileName);
+	FILE* f, *g;
+	f = write(FileName);
+	puts("\nФайл f:");
+	print(f, FileName);
+	puts("\nВведите имя для файла g:");
+	gets_s(Name);
+	g = new_file(f, FileName, Name);
+	puts("\nФайл g:");
+	print(g,Name);
+	return 0;
+}
