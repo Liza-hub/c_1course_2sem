@@ -1,0 +1,364 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdlib.h>
+#include <locale.h>
+#include <stdio.h>
+#include <string.h>
+#include <math.h>
+
+void print(float A[][10], int n, int m)
+{
+	int i, j;
+	for (i = 0; i < n; i++)
+	{
+		for (j = 0; j < m; j++)
+		{
+			printf("%15.5f", A[i][j]);
+		}
+		printf("\n");
+	}
+}
+
+int method_gausa_1(float A[][10], int n, int m)
+{
+	int k, i, j, p, FL = 0;
+	float h;
+	for (k = 0; k < n - 1; k++)
+	{
+		if (A[k][k] != 0)
+		{
+			for (i = k + 1; i < n; i++)
+			{
+				if (A[i][k] != 0)
+				{
+					h = -A[i][k] / A[k][k];
+					for (j = 0; j < m; j++)
+					{
+						A[i][j] = A[i][j] + A[k][j] * h;
+					}
+					print(A, n, m);
+					printf("\n");
+				}
+			}
+		}
+		else
+		{
+			printf("Решений нет или имеет бесконечное число решений!\n");
+			return 0;
+		}
+	}
+	return 1;
+}
+
+
+int method_gausa_2(float A[][10], int n, int m)
+{
+	int k=0, i, j, p=0, Fl=0, z, max = -50, maxi;
+	float h;
+	for (k=0; k<n-1; k++)
+	{
+		max = A[k][k];
+		maxi = k;
+		for (z = k+1; z < n; z++)
+		{
+			if (fabs(A[z][k]) > 1.19e-05)
+			{
+				p++;
+				if (fabs(A[z][k]) > max)
+				{
+					max = A[z][k];
+					maxi = z;
+				}
+			}
+		}
+		if (p != 0)
+		{
+			if (maxi != k)
+			{
+				for (j = 0; j < m; j++)
+				{
+					h = A[k][j];
+					A[k][j] = A[maxi][j];
+					A[maxi][j] = h;
+				}
+			}
+			for (i = k + 1; i < n; i++)
+			{
+				if (A[i][k] != 0)
+				{
+					h = -A[i][k] / A[k][k];
+					for (j = 0; j < m; j++)
+					{
+						A[i][j] = A[i][j] + A[k][j] * h;
+					}
+					print(A, n, m);
+					printf("\n");
+				}
+			}
+		}
+	}
+	return 1;
+}
+
+
+int method_gausa_3(float A[][10], int n, int m, int mas[])
+{
+	int k = 0, i, j, p = 0, Fl = 0, z, max, maxi, maxj;
+	float h;
+	for (k=0;k<n;k++)
+	{
+			max = 0;
+			for (z = k; z<n; z++)
+			{
+				for (j = k ; j<n; j++)
+				{
+					if (fabs(A[z][j]) > 1.19e-05)
+					{
+						p++;
+						if (fabs(A[z][j]) > max)
+						{
+							max = A[z][j];
+							maxi = z;
+							maxj = j;
+						}
+					}
+				}
+			}
+			if (p != 0)
+			{
+				h = mas[k];
+				mas[k] = mas[maxj];
+				mas[maxj] = h;
+				if (maxi!=k)
+				for (j = 0; j < m; j++)
+				{
+					h = A[k][j];
+					A[k][j] = A[maxi][j];
+					A[maxi][j] = h;
+				}
+				if (maxj!=k)
+				for (j = 0; j < n; j++)
+				{
+					h = A[j][k];
+					A[j][k] = A[j][maxj];
+					A[j][maxj] = h;
+				}
+				for (i = k + 1; i < n; i++)
+				{
+					if (A[i][k] != 0)
+					{
+						h = -A[i][k] / A[k][k];
+						for (j = 0; j < m; j++)
+						{
+							A[i][j] = A[i][j] + A[k][j] * h;
+						}
+						print(A, n, m);
+						printf("\n");
+					}
+				}
+			}
+	}
+	return 1;
+}
+
+
+int method_4(float A[][10], int n, int m)
+{
+	int k, i, j, z = 0, Fl=0;
+	double c, s, h1, h2;
+	for (k = 0; k < n; k++)
+	{
+		if (A[k][k] == 0)
+		{
+			z = k + 1;
+			Fl = 0;
+			while ((z<n) && (Fl==0))
+			{
+				if (A[z][k] != 0)
+				{
+					Fl = 1;
+					for (j = 0; j < m; j++)
+					{
+						h1 = A[k][j];
+						A[k][j] = A[z][j];
+						A[z][j] = h1;
+					}
+				}
+				z++;
+			}
+			if (Fl == 0)
+			{
+				printf("Решений нет или имеет бесконечное число решений!!!\n");
+				return 0;
+			}
+		}
+		else 
+		for (i = k+1; i < n; i++)
+		{
+			if (A[i][k] != 0)
+			{
+				h1 = A[k][k] * A[k][k] + A[i][k] * A[i][k];
+				h1 = sqrtf(h1);
+				c = A[k][k] / h1;
+				s = A[i][k] / h1;
+				for (j = 0; j < m; j++)
+				{
+					h2 = A[k][j];
+					A[k][j] = c * A[k][j] + s * A[i][j];
+					A[i][j] = c * A[i][j] - s * h2;
+				}
+				printf("\n");
+				print(A, n, m);
+			}
+		}
+	}
+	return 1;
+}
+
+int main()
+{
+	setlocale(0, "russian");
+	FILE* f;
+	char NAME[20], * ch, s[40];
+	int i, j, z, k = 0, m = 0, n = 0, p = 0, a, v, mas[4] = { 0,1,2,3 };
+	float A[10][10], x[4], b, B[10][10];
+	NAME[0] = '\0';
+	printf("Введите название файла:  ");
+	gets_s(NAME);
+	f = fopen(NAME, "r");
+
+	
+
+
+	//считывание массива из файла
+	n = 4;
+	m = 5;
+	for (i = 0; i < n; i++)
+	{
+		for (j = 0; j < m; j++)
+		{
+			fscanf(f, "%s", s);
+			ch = strchr(s, '.');
+			if (ch != NULL) *ch = ',';
+			A[i][j] = atof(s);
+			B[i][j] = A[i][j];
+		}
+	}
+
+	//вывод изначальной слау
+	printf("\nСформированный из файла массив\n");
+	print(A, n, m);
+
+	//Выбор метода решения СЛАУ
+	printf("Выберите меотд решения СЛАУ:\n1)---Стандартный метод Гауса\n2)---Метод Гауса с частичным выбором\n3)---Метод Гауса с полным выбором\n4)---QR-разложение\n");
+	scanf("%d", &v);
+
+
+	if (v == 1)
+	{
+		///////////////////////////////////////////////////////////1_метод_решения_СЛАУ//////////////////////////////////////////////////////////////////////////
+		printf("\n1 МЕТОД:\n");
+		printf("Приведение к верхнетрегольному виду:\n");
+		a = method_gausa_1(A, n, m); //метод Гауса, прямой ход
+		if (a != 0)
+		{
+			printf("\nМатрица, приведенная к верхнетреугольному виду:\n");
+			print(A, n, m);
+		}
+	}
+	else if (v == 2)
+	{
+		/////////////////////////////////////////////2_метод_решения_СЛАУ/////////////////////////////////////////////////////////
+		printf("\n2 МЕТОД:\n"); printf("Приведение к верхнетреульной матрице:\n");
+		a = method_gausa_2(A, n, m); //метод Гауса, прямой ход
+		print(A, n, m);
+		//вывод верхнетреугольной матрицы
+		if (a != 0)
+		{
+			printf("ИТОГ! Верхнетреульная матрица:\n");
+			print(A, n, m);
+		}
+	}
+	else if (v == 3)
+	{
+
+		////////////////////////////////////////////3_метод_решения_СЛАУ/////////////////////////////////////////////////////////
+		printf("\n3 МЕТОД:\n");
+		printf("Приведение к верхнетреульной матрице:\n");
+		a = method_gausa_3(A, n, m, mas); //метод Гауса, прямой ход
+		print(A, n, m);
+		//вывод верхнетреугольной матрицы
+		if (a != 0)
+		{
+			printf("ИТОГ! Верхнетреульная матрица:\n");
+			print(A, n, m);
+		}
+	}
+	else if (v == 4)
+	{
+		////////////////////////////////////////////4_метод_решения_СЛАУ/////////////////////////////////////////////////////////
+		printf("\n4 МЕТОД:\n");
+		printf("Приведение к верхнетреульной матрице:\n");
+		a = method_4(A, n, m);print(A, n, m);
+		if (a != 0)
+		{
+			printf("ИТОГ! Верхнетреульная матрица:\n");
+			print(A, n, m);
+		}
+	}
+	
+
+
+
+
+										//обратный ход
+	p = 0;
+	for (i = n - 1; i >= 0; i--)
+	{
+		k = 0;
+		for (j = 0; j < 5; j++)
+		{
+			if (fabs(A[i][j]) < 1.19e-05) k++;
+		}
+		if (k == 5)
+		{
+			printf("Решений нет или имеет бесконечное число решений!\n");
+			return 0;
+		}
+		else
+		{
+			x[mas[i]] = A[i][4];
+			if (p != 0)
+			{
+				for (z = 0; z < p; z++)
+				{
+					x[mas[i]] = x[mas[i]] - A[i][3 - z] * x[mas[3-z]];
+				}
+			}
+			x[mas[i]] = x[mas[i]] / A[i][i];
+			p++;
+		}
+	}
+
+
+										//Вывод ответа
+	printf("Ответ:\n");
+	for (i = 0; i < 4; i++)
+	{
+		printf("x[%d]=%6.3f\n", i + 1, x[i]);
+	}
+
+
+										//Проверка ответов
+	for (i = 0; i < n; i++)
+	{
+		b = 0;
+		for (j = 0; j < n; j++)
+		{
+			b = b + B[i][j] * x[j];
+		}
+		printf("b[%d]=%10.6f    ", i+1, b);
+		printf("Невязка=%10.6f\n", B[i][m-1]-b);
+	}
+
+	return 0;
+}
