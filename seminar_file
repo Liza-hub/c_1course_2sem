@@ -1,0 +1,74 @@
+/*
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <locale.h>
+#include <time.h>
+#include <conio.h>
+
+
+FILE* write(char Name[])
+{
+	FILE* f;
+	fopen_s(&f, Name, "w+b");
+	int k = 0;
+	for (int i = 0; i < rand() % 20; i++)
+	{
+		k = rand() % 100;
+		fwrite(&k, 1, sizeof(k), f);
+	}
+	return f;
+}
+
+
+int cvot(FILE* f)
+{
+	int k, count=0;
+	int sred = 0;
+	rewind(f);
+	while (fread(&k, 1, sizeof(k), f) > 0)
+	{
+		if (k % 3 == 0)
+		{
+			count++;
+			sred = sred + k;
+		}
+	}
+	if (count == 0)
+	{
+		puts("Кратных нет!");
+	}
+	else sred = sred / count;
+	return(sred);
+}
+
+
+void print(FILE* f)
+{
+	rewind(f);
+	int k = 0;
+	while (fread(&k, 1, sizeof(k), f) > 0)
+	{
+		printf("%5d", k);
+	}
+}
+
+int main()
+{
+	setlocale(0, "russian");
+	char FileName[30];
+	puts("Введите имя файла:");
+	FILE* f;
+	gets_s(FileName);
+	srand(time(NULL));
+	f = write(FileName);
+	print(f);
+	int sred = cvot(f);
+	printf("\n");
+	printf("sred=%5d", sred);
+	fclose(f);
+	//system("cls");//очистить экран
+	//проверка открыт ли файл
+	return 0; e
+}
+*/
