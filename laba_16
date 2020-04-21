@@ -1,0 +1,80 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <locale.h>
+
+
+void sum(int N, int &S)
+{
+	if (N == 0) S=0;
+	else
+	{
+		sum(N / 10, S);
+		S = S + N % 10;
+	}
+}
+
+int main()
+{
+	int N;
+	int S=0;
+	setlocale(0, "russian");
+	printf("Введите целое число: ");
+	scanf("%d", &N);
+	sum(N, S);
+	printf("S=%d", S);
+	return(0);
+}
+
+
+
+
+
+
+
+
+/*#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <conio.h>
+#include <locale.h>
+
+int main()
+{
+	setlocale(0, "russian");
+	FILE* f, *g;
+	f = fopen("in_bin.txt", "w+");
+	g = fopen("out_bin.txt", "w+");
+	int a, n, i;
+	srand((unsigned)time_t(NULL));
+	n = rand() % 20 + 10;
+	printf("Количество чисел :%5d\n", n);
+	for (i = 1; i <= n; i++)
+	{
+		a = rand() % 100 - 50;
+		fwrite(&a, sizeof(a), 1, f);
+		printf("%5d", a);
+	}
+	printf("\n");
+	rewind(f);
+	while (fread(&a, sizeof(a), 1, f) > 0)
+	{
+		if (a > 0)
+		{
+			printf("%5d", a);
+			fwrite(&a, sizeof(a), 1, g);
+		}
+	}
+	rewind(f);
+	while (fread(&a, sizeof(a), 1, f) > 0)
+	{
+		if (a < 0)
+		{
+			printf("%5d", a);
+			fwrite(&a, sizeof(a), 1, g);
+		}
+	}
+	fclose(f);
+	fclose(g);
+	return 0;
+}*/
