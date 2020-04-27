@@ -1,0 +1,112 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <conio.h>
+#include <locale.h>
+#include <string.h>
+
+struct list{
+	int ch;
+	list* next;
+	};
+
+int main()
+{
+	setlocale(0, "russian");
+	srand((unsigned)time_t(NULL));
+	FILE* f;
+	char a[120], *ptr, *str, buffer[10] = {0};
+	int dls, n, Fl = 0, count = 0, count3 = 0;
+	list *first, *last, *q, *p, *p1;
+	f = fopen("laba17.txt", "r+");
+	first = NULL;
+	last = first;
+	while (fread(&a, 1, sizeof(a), f) > 0)
+	{
+		str = a;
+		while ((ptr = strchr(str, ' ')) != NULL)
+		{
+			dls = ptr - str;
+			strncpy(buffer, str, dls);
+			buffer[dls] = '\0';
+			n = atoi(buffer);
+			if (first == NULL)
+			{
+				count++;
+				first = new list;
+				first->ch = n;
+				first->next = NULL;
+				last = first;
+			}
+			else
+			{
+				if (n < first->ch)
+				{
+					count++;
+					q = new list;
+					q->ch = n;
+					q->next = first;
+					first = q;
+				}
+				else
+				{
+					Fl = 0;
+					p1 = first;
+					p = first->next;
+					while (p != NULL && Fl==0)
+					{
+						if (n < p->ch)
+						{
+							count++;
+							q = new list;
+							q->ch = n;
+							q->next = p;
+							p1->next = q;
+							Fl = 1;
+						}
+						p1 = p;
+						p = p->next;
+					}
+					if (n > last->ch)
+					{
+						count++;
+						q = new list;
+						q->ch = n;
+						q->next = NULL;
+						last->next = q;
+						last = q;
+					}
+				}
+			}
+			str = ptr + 1;
+		}
+
+	}
+	q = first;
+	printf("Сформированный из файла список, отсортированный по возрастанию значений:\n");
+	while (q != NULL)
+	{
+		printf("%d", q->ch);
+		if (q->ch % 3 == 0)
+		{
+			count3++;
+			printf("(кратен 3)");
+		}
+		printf("\n");
+		q = q->next;
+	}
+	printf("\nКоличество всех элементов списка: %d\n", count);
+	if (count3 != 0)
+		printf("Количество элементов, кратных 3:  %d\n", count3);
+	else
+		printf("Нет элементов, кратных 3!\n");
+	q = first;
+	while (q != NULL)
+	{
+		p = q;
+		q = q->next;
+		delete(p);
+	}
+	fclose(f);
+	return 0;
+}
