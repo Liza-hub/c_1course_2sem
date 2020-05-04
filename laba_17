@@ -5,22 +5,23 @@
 #include <locale.h>
 #include <string.h>
 
-struct list{
+struct list {
 	int ch;
 	list* next;
-	};
+};
 
 int main()
 {
 	setlocale(0, "russian");
 	srand((unsigned)time_t(NULL));
 	FILE* f;
-	char a[120], *ptr, *str, buffer[10] = {0};
+	char a[120], *ptr, *str, buffer[10] = { 0 };
 	int dls, n, Fl = 0, count = 0, count3 = 0;
 	list *first, *last, *q, *p, *p1;
 	f = fopen("laba17.txt", "r+");
 	first = NULL;
 	last = first;
+	printf("Неотсортированный список:\n");
 	while (fread(&a, 1, sizeof(a), f) > 0)
 	{
 		str = a;
@@ -30,6 +31,7 @@ int main()
 			strncpy(buffer, str, dls);
 			buffer[dls] = '\0';
 			n = atoi(buffer);
+			printf("%d\n", n);
 			if (first == NULL)
 			{
 				count++;
@@ -53,7 +55,7 @@ int main()
 					Fl = 0;
 					p1 = first;
 					p = first->next;
-					while (p != NULL && Fl==0)
+					while (p != NULL && Fl == 0)
 					{
 						if (n < p->ch)
 						{
