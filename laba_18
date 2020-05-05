@@ -1,0 +1,159 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <locale.h>
+#include <string.h>
+
+typedef struct list {
+	char value[3];
+	struct list* left;
+	struct list* right;
+}list;
+
+void AddList(list** Main, list* current)
+{
+	//current->value < buffer->value
+	//strcmp(current->value, buffer->value) < 0
+	list* buffer;
+	buffer = *Main;
+	if (*Main == NULL) *Main = current;
+	else if (strcmp(current->value, buffer->value) < 0)
+	{
+		AddList(&buffer->right, current);
+	}
+	else AddList(&buffer->left, current);
+}
+
+void NewTree(list** Main, char* s)
+{
+	list *current;
+	char *p, *ch;
+	int i, n;
+	for (i = 0; i < strlen(s); i++)
+	{
+		current = (list*)malloc(sizeof(list));
+		current->value[0] = *(s + i);
+		current->value[1] = '\0';
+		current->left = NULL;
+		current->right = NULL;
+		AddList(Main, current);
+	}
+}
+
+
+void PrintList(list* Main)
+{
+	int fl = 0;
+	while (Main != NULL && fl==0)
+	{
+		printf("%s\n ", Main->value);
+		PrintList(Main->right);
+		PrintList(Main->left);
+		fl = 1;
+	}
+
+}
+
+
+void PrintList2(list* Main, int n, int k)
+{
+	int fl = 0;
+	k = k - 2;
+	while (Main != NULL && fl == 0)
+	{
+		PrintList2(Main->left, n, k);
+
+		for (int i = 0; i < n - k; i++) printf("    ");
+		printf("%s\n ", Main->value);
+
+		PrintList2(Main->right, n, k);
+		fl = 1;
+	}
+
+}
+
+void FindNumber(list *Main, int *k)
+{
+	int Fl = 0;
+	while (Main != NULL && Fl == 0)
+	{
+		if (atoi(Main->value) != 0)
+		{
+			printf("Найдена цифра - %s!\n", Main->value);
+			*k = * k + 1;
+		}
+		FindNumber(Main->left, k);
+		FindNumber(Main->right, k);
+		Fl = 1;
+	}
+}
+
+list *DeleteNode(list* node) 
+{
+	if (node == NULL) 
+	{
+		return node;
+	}
+	else 
+	{
+		if (node->left != NULL) node->left = DeleteNode(node->left);
+
+		if (node->right != NULL) node->right = DeleteNode(node->right);
+
+		if (atoi(node->value)!=0) 
+		{
+			list* tmp;
+			if (node->right == NULL)
+				tmp = node->left;
+			else 
+			{
+				list* ptr = node->right;
+				if (ptr->left == NULL) 
+				{
+					ptr->left = node->left;
+					tmp = ptr;
+				}
+				else 
+				{
+					list* pmin = ptr->left;
+					while (pmin->left != NULL) 
+					{
+						ptr = pmin;
+						pmin = ptr->left;
+					}
+					ptr->left = pmin->right;
+					pmin->left = node->left;
+					pmin->right = node->right;
+					tmp = pmin;
+				}
+			}
+			delete node;
+			return tmp;
+		}
+	}
+	return node;
+}
+
+
+int main()
+{
+	setlocale(0, "russian");
+	char* s, *p, *ch;
+	int dls, kol_num = 0;
+	list* tree, *tek;
+	s = (char*)malloc(40 * sizeof(char));
+	printf("Введите строку: ");
+	gets_s(s, 40);
+	dls = strlen(s);
+	tree = NULL;
+	NewTree(&tree, s);
+	PrintList2(tree, dls, dls);
+	printf("Полученное дерево:\n");
+	FindNumber(tree, &kol_num);
+	printf("Количество цифр в строке: %d\n", kol_num);
+	tree = DeleteNode(tree);
+	PrintList2(tree, dls - kol_num, dls - kol_num);
+	return 0;
+}
+
+
