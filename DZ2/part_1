@@ -1,0 +1,158 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <locale.h>
+#include <string.h>
+#include <conio.h>
+
+typedef struct list {
+	int number;
+	char name[10];
+	float ves;
+	char provod[20];
+}list;
+
+void WriteFile(FILE *f, char NameFile[])
+{
+	list a;
+	f = fopen(NameFile, "rb");
+	printf("\n\nНомер элемента  ||  Имя элемента  ||  Атомный вес  ||  Проводимость\n");
+	while (fread(&a, sizeof(a), 1, f) != NULL)
+	{
+		printf("%15d", a.number);
+		printf("%15s", a.name);
+		printf("%20.5f", a.ves);
+		printf("%15s\n", a.provod);
+	}
+	fclose(f);
+}
+
+void AddFile(FILE **f, char NameFile[])
+{
+	list a;
+	int comand, var;
+	*f = fopen(NameFile, "ab");
+	do
+	{
+	printf("  Введите номер элемента в таблице Менделеева\n");
+	scanf("%d", &a.number);
+	printf("  Введите название элемента\n");
+	scanf("%s", &a.name);
+	printf("  Введите атомный вес элемента\n");
+	scanf("%f", &a.ves);
+	printf("  Выберите вариант проводимости элемента\n");
+	printf("     1. проводник\n     2. изолятор\n     3. полупроводник\n");
+	scanf("%d", &var);
+	if (var == 1)      strcpy(a.provod , "provodnik"); 
+	else if (var == 2) strcpy(a.provod , "isolyator");
+	else if (var == 3) strcpy(a.provod , "poluprovodnik");
+	fwrite(&a, sizeof(a), 1, *f);
+	printf("  Введите 2 для продолжения или 0 для выхода: ");
+	scanf("%d", &comand);
+	} while (comand != 0);
+	fclose(*f);
+}
+
+void FindPoluprovod(FILE *f, char FileName[])
+{
+	list a;
+	f = fopen(FileName, "rb");
+	WriteFile(f, FileName);
+	printf("/////////////////////////////////////////////////");
+	printf("\nНазвания и атомные веса полупроводников\n");
+	while (fread(&a, sizeof(a), 1, f) != NULL)
+	{
+		if (strcmp(a.provod, "poluprovodnik")==0)
+		{
+			printf("%s		", a.name);
+			printf("%7.3f\n", a.ves);
+		}
+	}
+	fclose(f);
+}
+
+void FindProvod(FILE *f, char FileName[])
+{
+	list mas[20];
+	list a, buf;
+	int k = 0, i, j;
+	f = fopen(FileName, "rb");
+	while (fread(&a, sizeof(a), 1, f) != NULL)
+	{
+		if (strcmp(a.provod, "provodnik") == 0)
+		{
+			mas[k] = a;
+			k++;
+		}
+	}
+	for (i = 1; i < k; i++)
+	{
+		for (j = 0; j < k-1; j++)
+		{
+			if (mas[j].ves > mas[j+1].ves)
+			{
+				buf = mas[j + 1];
+				mas[j + 1] = mas[j];
+				mas[j] = buf;
+			}
+		}
+	}
+	printf("\n\nИнформация о проводниках в порядке возрастания их атомныйх весов:\n");
+	for (i = 0; i < k; i++)
+	{
+		printf("%15d", mas[i].number);
+		printf("%15s", mas[i].name);
+		printf("%20.5f", mas[i].ves);
+		printf("%15s\n", mas[i].provod);
+	}
+	fclose(f);
+}
+
+void FindIsol(FILE *f, char FileName[])
+{
+	list a;
+	f = fopen(FileName, "rb");
+	float znach;
+	printf("\n\nВведите значение для сравнения - ");
+	scanf("%f", &znach);
+	printf("Названия всех изоляторов, атомные веса которых не превышают заданного значения.\n");
+	while (fread(&a, sizeof(a), 1, f) != NULL)
+	{
+		if (strcmp(a.provod, "isolyator") == 0)
+		{
+			if (a.ves <= znach)
+			{
+				printf("%s		", a.name);
+				printf("%7.3f\n", a.ves);
+			}
+		}
+	}
+	fclose(f);
+}
+
+int main()
+{
+	setlocale(0, "russian");
+	FILE *f;
+	char FileName [10]= "dz2_1.bin";
+	f = fopen(FileName, "w+b");
+	int KEY;
+	printf("Выведите данные для файла!\n");
+	AddFile(&f, FileName);
+	printf("\nВыберите действие:\n 0)выйти из программы;\n 1)вывести данные из файла;\n 2)добавить данные;\n 3)найти названия и атомные веса всех полупроводников\n 4)вывести сведения о проводниках в порядке возрастания их атомных весов\n 5)определить названия всех изоляторов, атомные веса которых не превышают заданного значения.\n");
+	scanf("%d", &KEY);
+	while (KEY != 0)
+	{
+		switch (KEY)
+		{
+		case 1: { WriteFile(f, FileName);       break; }
+		case 2: { AddFile(&f, FileName);        break; }
+		case 3: { FindPoluprovod(f, FileName);  break; }
+		case 4: { FindProvod(f, FileName);      break; }
+		case 5: { FindIsol(f, FileName);        break; }
+		}
+		printf("\nВыберите действие:\n 0)выйти из программы;\n 1)вывести данные из файла;\n 2)добавить данные;\n 3)найти названия и атомные веса всех полупроводников\n 4)вывести сведения о проводниках в порядке возрастания их атомных весов\n 5)определить названия всех изоляторов, атомные веса которых не превышают заданного значения.\n");
+		scanf("%d", &KEY);
+	}
+	return 0;
+}
