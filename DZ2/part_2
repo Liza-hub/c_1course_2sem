@@ -1,0 +1,53 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <conio.h>
+#include <locale.h>
+#include <string.h>
+
+int perest(int m, int n, int mas[], int new_mas[], int &kol_per, int kol_rek)
+{
+	int buf[5], i, j, k;
+	if (n == m)
+	{
+		for (i = 0; i < n; i++) printf("%2d", new_mas[i]);
+		printf("\n");
+		kol_per++;
+	}
+	else if (m < n)
+		{
+			for (j = 0; j < n-m; j++)
+			{
+				new_mas[m] = mas[j];
+				k = 0;
+				for (i = 0; i < n-m; i++)
+				{
+					if (i != j)
+					{
+						buf[k] = mas[i];
+						k++;
+					}
+				}
+				perest(m + 1, n, buf, new_mas, kol_per, kol_rek++);
+
+			}
+		}
+	return kol_rek;
+}
+
+int main()
+{
+	setlocale(0, "russian");
+	int mas[5], kol_per = 0, kol_rek = 0;
+	int new_mas[5]={0,0,0,0,0};
+	printf("Введите цифры перестановки : ");
+	for (int i = 0; i < 5; i++)
+	{
+		scanf("%d", &mas[i]);
+	}
+	kol_rek = perest(0, 5, mas, new_mas, kol_per, kol_rek);
+	printf("Количество перестаново различных : %d\n", kol_per);
+	//printf("Количество вызовов рекурсий : %d", kol_rek);
+	printf("Глубина рекурсии : %d", kol_rek);
+	return 0;
+}
