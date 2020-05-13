@@ -1,0 +1,137 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <conio.h>
+#include <locale.h>
+#include <string.h>
+
+typedef struct list 
+{
+	char value;
+	list* left;
+	list* right;
+}list;
+
+int Priority(char c)
+{
+	switch(c)
+	{
+	case '+': 
+	case '-': return 1;
+	case '*':
+	case '/': return 2;
+	}
+	return 100;
+}
+
+list* make_tree(char function[], int first, int last)
+{
+	list *tree = new list;
+	int i, prt, MinPrt, count = 0, k;
+	char c;
+	if ((first == last) || (first==(last-1)))
+	{
+		tree->value = function[first];
+		tree->left = NULL;
+		tree->right = NULL;
+		return tree;
+	}
+	MinPrt = 100;
+	for (i = first; i < last; i++)
+	{
+		c = function[i];
+		if (c == '(') { count++; continue; }
+		if (c == ')') { count--; continue; }
+		if (count > 0) continue;
+		prt = Priority(c);
+		if (prt < MinPrt)
+		{
+			MinPrt = prt;
+			k = i;
+		}
+	}
+	if (MinPrt==100 && function[first] == '(' && (function[last] == ')' || function[last] == '\0'))
+		return make_tree(function, first + 1, last - 1);
+	else {
+		tree->value = function[k];
+		tree->left = make_tree(function, first, k - 1);
+		tree->right = make_tree(function, k + 1, last);
+		return tree;
+	}
+}
+
+void PrintTree(list *tree, int spase)
+{
+	const int COUNT = 5;
+	if (tree != NULL)
+	{
+		spase += COUNT;
+		PrintTree(tree->right, spase);
+		for (int i = COUNT; i < spase; i++)
+			printf("%c", ' ');
+		printf("%c\n", tree->value);
+		PrintTree(tree->left, spase);
+	}
+}
+
+int Number(list *tree)
+{
+	int t = 0;
+	if (tree!=NULL) return 0;
+	if (strchr("1234567890", tree->value) != NULL); return 1;
+	return 0;
+}
+
+int Operator(list *tree, int x, int y)
+{
+	switch (tree->value)
+	{
+	case '+': return x + y;
+	case '-': return x - y;
+	case '*': return x * y;
+	case '/': return x / y;
+	}
+}
+
+
+/*
+void Calculate(list *tree)
+{
+	if (tree != NULL && Number(tree->left) == 1 && Number(tree->right) == 1)
+	{
+		if ((tree->left->value > 'A' && tree->left->value < 'z') || (tree->right->value > 'a' && tree->right->value < 'z'))
+		{
+			printf("")
+			return Operator(tree, );
+		}
+	}
+
+
+
+	while (tree != NULL && Number(tree->left) != 0 && Number(tree->right) != 0)
+	{
+		a = atoi(&tree->left->value);
+		b = atoi(&tree->right->value);
+		Operator(tree, a, b);
+		delete tree->left;
+		delete tree->right;
+		sprintf(&tree->value, "%d", c);
+		tree->left = NULL;
+		tree->right = NULL;
+	}
+}
+*/
+
+
+int main()
+{
+	setlocale(0, "russian");
+	char function[80];
+	char c;
+	list *tree;
+	printf("Введите арифметическое выражение: ");
+	gets_s(function);
+	tree = make_tree(function, 0, strlen(function));
+	PrintTree(tree, 10);
+	return 0;
+}
