@@ -1,0 +1,165 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <conio.h>
+#include <locale.h>
+#include <string.h>
+
+struct list {
+	char ch;
+	list* next;
+};
+
+
+list * make_list(list *Top, FILE *f)
+{
+	char str[80];
+	char *buffer, *ptr;
+	int k = 0, dls, Fl = 0, i;
+	list *last = Top, *tek1, *tek, *now;
+	printf("Неотсортированный список\n");
+	if (fgets(str, 80, f) != NULL)
+	{
+		k++;
+		for (i=0;i<strlen(str);i++)
+		{        
+			printf("%c\n", str[i]);          ///печатает число
+			if (Top == NULL)            ///создает вершину
+			{
+				Top       = new list;
+				Top->ch   = str[i];          ///заполняет значение
+				Top->next = NULL;
+				last      = Top;
+			}
+			else
+			{
+				if (str[i] < Top->ch)
+				{
+					now       = new list;
+					now->ch   = str[i];      ///заполняет значение
+					now->next = Top;
+					Top       = now;
+				}
+				else
+				{
+					Fl   = 0;
+					tek1 = Top;
+					tek  = Top->next;
+					while (tek != NULL && Fl == 0)
+					{
+						if (str[i] < tek->ch)
+						{
+							now        = new list;
+							now->ch    = str[i];   ///заполняет значение
+							now->next  = tek;
+							tek1->next = now;
+							Fl         = 1;
+						}
+						tek1 = tek;
+						tek  = tek->next;
+					}
+					if (str[i] > last->ch)
+					{
+						now        = new list;
+						now->ch    = str[i];    ///заполняет значение
+						now->next  = NULL;
+						last->next = now;
+						last       = now;
+					}
+				}
+			}
+		}
+
+	}
+	if (k == 0)
+	{
+		printf("Заполните файл:\n");
+		gets_s(str, 50);
+		fputs(str, f);
+		if (fgets(str, 80, f) != NULL)
+		{
+			puts(str);
+		}
+	}
+	return Top;
+}
+
+void PrintList(list* Top)
+{
+	list *q;
+	q = Top;
+	while (q != NULL)
+	{
+		printf("%c\n", q->ch);  ///печатает число
+		q = q->next;
+	}
+}
+
+list * udal(list *Top)
+{
+	list *q, *p;
+	int Fl = 1;
+	p = Top;
+	q = Top;
+	
+		while (q != NULL && Fl != 0)
+		{
+			Fl = 0;
+			if ((q->ch > 32 && q->ch < 65) || (q->ch > 90 && q->ch < 97))
+			{
+				printf("Найден спец. символ: %c\n", q->ch);
+				if (q == Top)
+				{
+					Top = q->next;
+					delete q;
+					Fl = 1;
+					p = Top;
+					q = Top;
+				}
+				else if (q->next == NULL)
+				{
+					p->next = NULL;
+					delete q;
+					Fl = 1;
+					p = Top;
+					q = Top;
+				}
+				else
+				{
+					p->next = q->next;
+					delete q;
+					Fl = 1;
+					p = q;
+					q = p;
+				}
+			}
+			else
+			{
+				p = q;
+				q = q->next;
+			}
+		}
+	
+	return Top;
+}
+
+int main()
+{
+	setlocale(0, "russian");
+	FILE* f;
+	list *Top = NULL;
+	printf("Открытие файла : ");
+	f = fopen("rk2.txt", "r+");
+	if (f == NULL) { printf("ошибка\n"); return -1; }
+	else printf("выполнено\n");
+	Top = make_list(Top, f);
+	printf("Отсортированный список\n");
+	PrintList(Top);
+	Top = udal(Top);
+	printf("Отсортированный список, в котором удалены все специальные символы, кроме букв\n");
+	PrintList(Top);
+	printf("Закрытие файла : ");
+	if (fclose(f) == EOF) printf("ошибка\n");
+	else printf("выполнено\n");
+	return 0;
+}
