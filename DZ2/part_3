@@ -77,9 +77,9 @@ void PrintTree(list *tree, int spase)
 int Number(list *tree)
 {
 	int t = 0;
-	if (tree!=NULL) return 0;
-	if (strchr("1234567890", tree->value) != NULL); return 1;
-	return 0;
+	if (tree==NULL) return 0;
+	if (strchr("1234567890", tree->value) == NULL) return 0;
+	return 1;
 }
 
 int Operator(list *tree, int x, int y)
@@ -87,51 +87,64 @@ int Operator(list *tree, int x, int y)
 	switch (tree->value)
 	{
 	case '+': return x + y;
-	case '-': return x - y;
+	case '-': return x - y; 
 	case '*': return x * y;
-	case '/': return x / y;
+	case '/': return x / y; 
 	}
 }
 
 
-/*
-void Calculate(list *tree)
+float Calculate(list *tree, int &k)
 {
-	if (tree != NULL && Number(tree->left) == 1 && Number(tree->right) == 1)
+	float a, b;
+	float c, buffer;
+	if (tree == NULL) return 0;
+	if (tree->left != NULL) a = Calculate(tree->left, k);
+	if (tree->right != NULL) b = Calculate(tree->right, k);
+	if (tree->left == NULL && tree->right == NULL)
 	{
-		if ((tree->left->value > 'A' && tree->left->value < 'z') || (tree->right->value > 'a' && tree->right->value < 'z'))
-		{
-			printf("")
-			return Operator(tree, );
+		if (Number(tree) == 1) { buffer = tree->value - '0'; }
+		else {
+			printf("Введите %c - ", tree->value);
+			scanf("%f", &buffer);
 		}
+		delete tree;
+		tree = NULL;
+		return buffer;
 	}
-
-
-
-	while (tree != NULL && Number(tree->left) != 0 && Number(tree->right) != 0)
+	switch (tree->value)
 	{
-		a = atoi(&tree->left->value);
-		b = atoi(&tree->right->value);
-		Operator(tree, a, b);
-		delete tree->left;
-		delete tree->right;
-		sprintf(&tree->value, "%d", c);
-		tree->left = NULL;
-		tree->right = NULL;
+	case '+': return (a + b);
+	case '-': return (a - b);
+	case '*': return (a * b);
+	case '/': { if (b == 0) k++; return (a / b); }
 	}
 }
-*/
 
 
 int main()
 {
 	setlocale(0, "russian");
 	char function[80];
-	char c;
 	list *tree;
-	printf("Введите арифметическое выражение: ");
-	gets_s(function);
+	int k = 0, KEY;
+	printf("  1) Посчитать значение (6-4*(b+2)/4)/(7-a)\n  2) Ввести новое выражение\n");
+	scanf("%d", &KEY);
+	if (KEY == 1)
+	{
+		strcpy(function, "(6-4*(b+2)/4)/(7-a)");
+	}
+	else if (KEY == 2)
+	{
+		printf("Введите арифметическое выражение: ");
+		scanf("%s", &function);
+	}
 	tree = make_tree(function, 0, strlen(function));
-	PrintTree(tree, 10);
+	printf("Полученное дерево из вырожения:\n");
+	PrintTree(tree, 20);
+	float c = Calculate(tree, k);
+	if (k == 0)
+	printf("%6.2f", c);
+	else printf("     Деление на 0!!!\n     Проверьте данные!");
 	return 0;
 }
