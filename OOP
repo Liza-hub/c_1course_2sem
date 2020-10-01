@@ -1,0 +1,239 @@
+#include <iostream>
+#include <fstream>
+using namespace std;
+
+class Triangle
+{
+public:
+	float a;
+	float b;
+	float c;
+	Triangle(float first = 0, float second = 0, float third = 0)
+	{
+		cout << "---Сработал конструктор Triangle---" << endl;
+		a = first;
+		b = second;
+		c = third;
+	}
+	void Print_data()
+	{
+		cout << "Triangle" << endl;
+		cout << "a = " << a << "  b = " << b << "  c = " << c << endl;
+	}
+	~Triangle()
+	{
+		cout << "---Сработал деструктор Triangle---" << endl;
+	}
+};
+
+class Equilateral: public Triangle
+{
+public:
+	Equilateral(float first = 0, float second = 0, float third = 0): Triangle(first, second, third){}
+	void Print_data()
+	{
+		cout << "Equilateral" << endl;
+		cout << "a = " << a << "  b = " << b << "  c = " << c << endl;
+	}
+};
+
+class Rectangular: public Triangle
+{
+public:
+	Rectangular(float first, float second, float third) : Triangle(first, second, third) {}
+	void Print_data()
+	{
+		cout << "Rectangular" << endl;
+		cout << "a = " << a << "  b = " << b << "  c = " << c << endl;
+	}
+};
+
+
+class Rectangle
+{
+public:
+	float a;
+	float b;
+	float c;
+	float d;
+	Rectangle(float first = 0, float second = 0, float third = 0, float fourth = 0)
+	{
+		cout << "---Сработал конструктор Rectangle---" << endl;
+		a = first;
+		b = second;
+		c = third;
+		d = fourth;
+	}
+	void Print_data()
+	{
+		cout << "Rectangle" << endl;
+		cout << "a = " << a << "  b = " << b << "  c = " << c << "  d = " << d << endl;
+	}
+	~Rectangle()
+	{
+		cout << "---Сработал деструктор Rectangle---" << endl;
+	}
+};
+
+class Square : public Rectangle
+{
+public:
+	Square(float first, float second, float third, float fourth): Rectangle(first, second, third, fourth){}
+	void Print_data() 
+	{
+		cout << "Square" << endl;
+		cout << "a = " << a << "  b = " << b << "  c = " << c << "  d = " << d << endl;
+	}
+};
+
+class Rhombus : public Rectangle
+{
+public:
+	Rhombus(float first, float second, float third, float fourth) : Rectangle(first, second, third, fourth) {}
+	void Print_data()
+	{
+		cout << "Rhombus" << endl;
+		cout << "a = " << a << "  b = " << b << "  c = " << c << "  d = " << d << endl;
+	}
+};
+
+bool IsRectangular(float a, float b, float c)
+{
+	if (a * a + b * b == c * c)
+		return 1;
+	else if (a * a + c * c == b * b)
+		return 1;
+	else if (b * b + c * c == a * a)
+		return 1;
+	else return 0;
+}
+
+bool IsSquare(float a, float b, float c, float d)
+{
+	if (a == b && a == c && a == d)
+		return 1;
+	else return 0;
+}
+
+
+int main()
+{
+	setlocale(LC_ALL, "rus");
+	float* a;
+	int n;
+	cin >> n;
+	if (n == 3) {
+		a = new float[n];
+		for (int i = 0; i < n; i++)
+			cin >> *(a + i);
+		if (*a == *(a + 1) && *(a + 0) == *(a + 2))
+		{
+			Equilateral e(*a, *(a + 1), *(a + 2));
+			e.Print_data();
+		}
+		else if (IsRectangular(*a, *(a + 1), *(a + 2)) == 1)
+		{
+			Rectangular re(*a, *(a + 1), *(a + 2));
+			re.Print_data();
+		}
+		else
+		{
+			Triangle tr(*a, *(a + 1), *(a + 2));
+			tr.Print_data();
+		}
+	}
+	else if (n == 4)
+	{
+		if (IsSquare(*a, *(a + 1), *(a + 2), *(a + 3)) == 1)
+		{
+			Square sq(*a, *(a + 1), *(a + 2), *(a + 3));
+			sq.Print_data();
+		}
+		else if 
+	}
+	Equilateral e(1,2,3);
+	e.Print_data();
+	cout << endl;
+	Rectangular re(3.6, 2.9, 1.9);
+	re.Print_data();
+	cout << endl;
+	Rhombus r(3.6, 1.89, 0.245, 90.45);
+	r.Print_data();
+	cout << endl;
+	return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+#include <iostream>
+#include <fstream>
+using namespace std;
+
+
+class MGTU
+{
+public:
+	string fname;
+	string name;
+	string lname;
+	MGTU(char *buff)
+	{
+		cout << "---Работает конструктор MGTU---" << endl;
+		char* ptr1, * ptr2;
+		char name[20], fname[20], lname[20];
+		ptr2 = buff;
+		ptr1 = strchr(buff, ' ');
+		strncpy_s(fname, ptr2, ptr1 - ptr2);
+		ptr2 = ptr1 + 1;
+		ptr1 = strchr(ptr2, ' ');
+		strncpy_s(name, ptr2, ptr1 - ptr2);
+		ptr2 = ptr1 + 1;
+		strcpy_s(lname, ptr2);
+		cout << fname << ' ' << name << ' ' << lname << ' ';
+	}
+	MGTU() {}
+	~MGTU()
+	{
+		cout << "---Сработал деструктор MGTU---" << endl << endl;
+	}
+};
+
+class Student: public MGTU {
+public:
+	Student(char* buff) : MGTU(buff){}
+	void PrintStudent()
+	{
+		cout << fname << ' ' << name << ' ' << lname << endl;
+	}
+	Student() {}
+};
+
+class Teacher: public MGTU{};
+
+int main()
+{
+	setlocale(LC_ALL, "rus");
+	char buff[50];
+	Student* p;
+	ifstream f("student.txt");
+	while (f.getline(buff, 50))
+	{
+		p = new Student(buff);
+		p->PrintStudent();
+		delete p;
+	}
+	f.close();
+	return 0;
+}*/
